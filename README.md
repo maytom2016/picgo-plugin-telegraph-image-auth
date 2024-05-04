@@ -1,6 +1,8 @@
 # picgo-plugin-telegraph-image
 
-plugin for [PicGo/PicList](https://github.com/Molunerfinn/PicGo)
+plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
+
+[PicList](https://github.com/Kuingsmile/PicList)
 
 - telegraph-image图床上传
 
