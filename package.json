@@ -1,7 +1,7 @@
 {
-  "name": "picgo-plugin-telegraph-image",
+  "name": "picgo-plugin-telegraph-image-auth",
   "version": "1.0.0",
-  "description": "telegraph-image图床",
+  "description": "telegraph-image图床（支持认证）",
   "main": "src/index.js",
   "publishConfig": {
     "access": "public"
