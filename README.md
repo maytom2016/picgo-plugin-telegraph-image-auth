@@ -1,6 +1,6 @@
 # picgo-plugin-telegraph-image
 
-plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
+plugin for [PicGo/PicList](https://github.com/Molunerfinn/PicGo)
 
 - telegraph-image图床上传
 
@@ -10,9 +10,8 @@ plugin for [PicGo](https://github.com/Molunerfinn/PicGo)
 
 - 图床地址: 图床地址
 
-  如：https://telegraph-image.pages.dev
+  如：https://<span></span>telegraph-image.pages.dev/authcode
 
-![image-20221129171927305](https://telegraph-image.pages.dev/file/0880d79319dba00a717cf.png)
 
 
 
