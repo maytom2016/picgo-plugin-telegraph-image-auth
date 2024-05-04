@@ -1,21 +1,25 @@
 module.exports = (ctx) => {
   const register = () => {
-    ctx.helper.uploader.register('telegraph-image', {
+    ctx.helper.uploader.register('telegraph-image-uploader', {
       handle,
-      name: 'telegraph-image图床',
+      name: 'telegraph-image',
       config: config
     })
   }
   const handle = async function (ctx) {
-    let userConfig = ctx.getConfig('picBed.telegraph-image')
+    let userConfig = ctx.getConfig('picBed.telegraph-image-uploader')
     if (!userConfig) {
       throw new Error('Can\'t find uploader config')
     }
-    const url = userConfig.url+'/upload'
-    const paramName ='file'
-    const jsonPath ='0.src'
-    const customHeader = ''
-    const customBody = ''
+    
+    const uploadurl1 = new URL(userConfig.customUrl);
+    const url1 = `${uploadurl1.protocol}//${uploadurl1.host}`;
+    const uploadurl=uploadurl1.toString();
+    const url=url1.toString();
+    const customHeader=userConfig.customHeader;
+    const customBody=userConfig.customBody;
+
+    const paramName = "file"
     try {
       let imgList = ctx.output
       for (let i in imgList) {
@@ -23,27 +27,19 @@ module.exports = (ctx) => {
         if (!image && imgList[i].base64Image) {
           image = Buffer.from(imgList[i].base64Image, 'base64')
         }
-        const postConfig = postOptions(image, customHeader, customBody, url, paramName, imgList[i].fileName)
+        const postConfig = postOptions(image, uploadurl, paramName, imgList[i].fileName,customHeader,customBody)
         let body = await ctx.Request.request(postConfig)
 
         delete imgList[i].base64Image
         delete imgList[i].buffer
-        if (!jsonPath) {
-          imgList[i]['imgUrl'] = body
+        let imgUrl = url + JSON.parse(body)[0].src
+        if (imgUrl) {
+          imgList[i]['imgUrl'] = imgUrl
         } else {
-          body = JSON.parse(body)
-          let imgUrl = body
-          for (let field of jsonPath.split('.')) {
-            imgUrl = imgUrl[field]
-          }
-          if (imgUrl) {
-            imgList[i]['imgUrl'] = userConfig.url+imgUrl
-          } else {
-            ctx.emit('notification', {
-              title: '返回解析失败',
-              body: '请检查JsonPath设置'
-            })
-          }
+          ctx.emit('notification', {
+            title: '返回解析失败',
+            body: body
+          })
         }
       }
     } catch (err) {
@@ -54,7 +50,7 @@ module.exports = (ctx) => {
     }
   }
 
-  const postOptions = (image, customHeader, customBody, url, paramName, fileName) => {
+  const postOptions = (image, url, paramName, fileName,customHeader,customBody) => {
     let headers = {
       contentType: 'multipart/form-data',
       'User-Agent': 'PicGo'
@@ -81,23 +77,39 @@ module.exports = (ctx) => {
   }
 
   const config = ctx => {
-    let userConfig = ctx.getConfig('picBed.telegraph-image')
+    let userConfig = ctx.getConfig('picBed.telegraph-image-uploader')
     if (!userConfig) {
       userConfig = {}
     }
     return [
       {
-        name: 'url',
+        name: 'customUrl',
         type: 'input',
-        default: userConfig.url,
+        default: userConfig.customUrl,
         required: true,
-        message: '图床地址 如 https://telegraph-image.pages.dev',
-        alias: '图床地址'
+        message: '图片上传url(eg: https://tc.bian666.cf)',
+        alias: 'URL'
+      },
+      {
+        name: 'customHeader',
+        type: 'input',
+        default: userConfig.customHeader,
+        required: false,
+        message: '自定义请求头 标准JSON{"key":"value"},非专业勿改，保持空值',
+        alias: '自定义请求头'
+      },
+      {
+        name: 'customBody',
+        type: 'input',
+        default: userConfig.customBody,
+        required: false,
+        message: '自定义Body 标准JSON{"key":"value"},非专业勿改，保持空值',
+        alias: '自定义Body'
       }
     ]
   }
   return {
-    uploader: 'telegraph-image',
+    uploader: 'telegraph-image-uploader',
     register
 
   }
