@@ -8,7 +8,7 @@ plugin for [PicGo/PicList](https://github.com/Molunerfinn/PicGo)
 
 ### 图床配置
 
-- 图床地址: 图床地址
+- 图床地址: 图床地址/认证码
 
   如：https://<span></span>telegraph-image.pages.dev/authcode
 
